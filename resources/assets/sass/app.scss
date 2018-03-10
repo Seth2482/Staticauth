@@ -1,0 +1,48 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+// Variables
+@import "variables";
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+// Material icons
+@import url("https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.min.css");
+
+.navbar {
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  height: 64px;
+  margin-bottom: 3em;
+  .title {
+    color: #1d2124;
+    font-size: 25px;
+    display: block;
+    margin: 0 auto;
+    cursor: pointer;
+  }
+
+}
+
+.page-content {
+  background-color: #ffffff;
+  border: #6c757d;
+  padding: 2em 2em;
+  border: rgba(0, 0, 0, .1) 1px solid;
+  .action-button {
+    position: absolute;
+    right: 10px;
+  }
+  margin-bottom: 6em;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
