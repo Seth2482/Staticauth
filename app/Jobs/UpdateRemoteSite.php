@@ -58,9 +58,7 @@ class UpdateRemoteSite implements ShouldQueue
             // 还未被删除
             if (realpath($filepath)) {
                 $repo->removeFile($filename);
-                $repo->addAllChanges();
-                $repo->commit('Delete site:' . $this->site->url);
-                $repo->push();
+                $this->commitAndPush($repo);
             }
             $this->site->forceDelete();
 
@@ -73,18 +71,25 @@ class UpdateRemoteSite implements ShouldQueue
                 throw new \Exception('写入文件失败');
             }
 
-            // 添加到追踪流
-            $repo->addFile($filename);
+            $this->commitAndPush($repo);
 
-            // 提交
-            $repo->commit('Update site:' . $this->site->url);
-
-            // 提交到远程
-            $repo->push();
-
-            $this->site->update([
-                'status' => Site::STATUS_COMMITTED
-            ]);
+            $this->finished();
         }
+    }
+
+    public function commitAndPush(GitRepository $repo)
+    {
+        if ($repo->hasChanges()) {
+            $repo->addAllChanges();
+            $repo->commit('auto update');
+            $repo->push();
+        }
+    }
+
+    public function finished()
+    {
+        $this->site->update([
+            'status' => Site::STATUS_COMMITTED
+        ]);
     }
 }

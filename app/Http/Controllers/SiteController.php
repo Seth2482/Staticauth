@@ -15,7 +15,7 @@ class SiteController extends Controller
         $rules = [
             'url' => ['required',
                 'regex:/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/'],
-            'project_id' => 'required|exists:projects,id',
+            'project_id'=> 'sometimes|required|exists:projects,id',
             'expire_at' => 'nullable|date_format:Y-m-d|after:today',
             'extra' => 'nullable|array'
         ];
@@ -24,7 +24,6 @@ class SiteController extends Controller
         $data = $this->validate($request, $rules);
         $data['status'] = Site::STATUS_UNCOMMIT;
         $message = $site->exists() ? "站点已添加，请等待系统提交" : "授权站点已创建，请等待系统提交";
-
         if ($site->fill($data)->save()) {
             // 触发事件
             event(new SiteUpdated($site));
@@ -48,6 +47,7 @@ class SiteController extends Controller
         }
 
         if ($site->delete()) {
+            $this->dispatch(new UpdateRemoteSite($site));
             flash('站点已加入删除队列，请等待系统提交');
         } else {
             flash('写入数据库失败');
